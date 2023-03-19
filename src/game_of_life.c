@@ -1,3 +1,4 @@
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -13,6 +14,9 @@ int equal(int** field1, int** field2);
 int ex_alive(int** field);
 
 int main() {
+    initscr();
+    nodelay(stdscr, true);
+    noecho();
     int** field1 = malloc(HEIGHT * sizeof(int*));
     int* ptr1 = malloc(HEIGHT * WIDTH * sizeof(int));
     for (int i = 0; i < HEIGHT; i++) {
@@ -23,11 +27,18 @@ int main() {
             scanf("%d", &field1[q][s]);
         }
     }
-    int equals = 0, count_gen = 0;
+    FILE* f = freopen("/dev/tty", "r", stdin);
+    if (f == NULL) printf("Hello Staff");
+    int equals = 0, count_gen = 0, delay = 150000;
+    draw(field1);
     while (!equals && count_gen != GEN_COUNT && ex_alive(field1)) {
-        usleep(150000);
-        system("clear");
+        usleep(delay);
+        char speed = getch();
+        if (speed == 'f') delay -= 10000;
+        if (speed == 's') delay += 10000;
+        clear();
         draw(field1);
+        refresh();
         int** field2 = malloc(HEIGHT * sizeof(int*));
         int* ptr2 = malloc(HEIGHT * WIDTH * sizeof(int));
         for (int k = 0; k < HEIGHT; k++) field2[k] = ptr2 + WIDTH * k;
@@ -40,6 +51,7 @@ int main() {
     }
     free(ptr1);
     free(field1);
+    endwin();
     return 0;
 }
 
@@ -56,14 +68,14 @@ void draw(int** field) {
         for (int j = 0; j < WIDTH; j++) {
             if (field[i][j]) {
                 if (j == WIDTH - 1)
-                    printf("#\n");
+                    addstr("#\n");
                 else
-                    printf("#");
+                    addch('#');
             } else {
                 if (j == WIDTH - 1)
-                    printf(".\n");
+                    addstr(".\n");
                 else
-                    printf(".");
+                    addch('.');
             }
         }
     }
