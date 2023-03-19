@@ -1,7 +1,7 @@
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <ncurses.h>
 #define HEIGHT 25
 #define WIDTH 80
 #define GEN_COUNT 300
@@ -15,7 +15,7 @@ int ex_alive(int** field);
 
 int main() {
     initscr();
-    nodelay(stdscr,true);
+    nodelay(stdscr, true);
     noecho();
     int** field1 = malloc(HEIGHT * sizeof(int*));
     int* ptr1 = malloc(HEIGHT * WIDTH * sizeof(int));
@@ -27,15 +27,15 @@ int main() {
             scanf("%d", &field1[q][s]);
         }
     }
-    FILE *f=freopen("/dev/tty","r",stdin);
-    if(f==NULL) printf("Hello Staff");
+    FILE* f = freopen("/dev/tty", "r", stdin);
+    if (f == NULL) printf("Hello Staff");
     int equals = 0, count_gen = 0, delay = 150000;
-        draw(field1);
+    draw(field1);
     while (!equals && count_gen != GEN_COUNT && ex_alive(field1) && delay >= 10000 && delay <= 500000) {
         usleep(delay);
         char speed = getch();
-        if (speed == 'f') delay -=10000;
-        if (speed == 's') delay +=10000;
+        if (speed == 'f') delay -= 10000;
+        if (speed == 's') delay += 10000;
         clear();
         draw(field1);
         refresh();
