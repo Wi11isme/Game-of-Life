@@ -20,8 +20,8 @@ int main() {
             scanf("%d", &field1[q][s]);
         }
     }
-    for (int i = 0; i < 30; i++) {
-        usleep(300000);
+    for (int i = 0; i < 3000; i++) {
+        usleep(50000);
         system("clear");
         draw(field1);
         int** field2 = malloc(HEIGHT * sizeof(int*));
