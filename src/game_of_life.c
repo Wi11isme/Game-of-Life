@@ -3,11 +3,14 @@
 #include <unistd.h>
 #define HEIGHT 25
 #define WIDTH 80
+#define GEN_COUNT 300
 
 void input(int** field1, int** field2);
 void draw(int** field);
 int new_cell(int** field, int y, int x);
 void copy(int** field1, int** field2);
+int equal(int** field1, int** field2);
+int ex_alive(int** field);
 
 int main() {
     int** field1 = malloc(HEIGHT * sizeof(int*));
@@ -20,17 +23,20 @@ int main() {
             scanf("%d", &field1[q][s]);
         }
     }
-    for (int i = 0; i < 3000; i++) {
-        usleep(50000);
+    int equals = 0, count_gen = 0;
+    while (!equals && count_gen != GEN_COUNT && ex_alive(field1)) {
+        usleep(150000);
         system("clear");
         draw(field1);
         int** field2 = malloc(HEIGHT * sizeof(int*));
         int* ptr2 = malloc(HEIGHT * WIDTH * sizeof(int));
         for (int k = 0; k < HEIGHT; k++) field2[k] = ptr2 + WIDTH * k;
         input(field1, field2);
+        equals = equal(field1, field2);
         copy(field1, field2);
         free(ptr2);
         free(field2);
+        count_gen++;
     }
     free(ptr1);
     free(field1);
@@ -86,4 +92,24 @@ void copy(int** copy_field, int** field_orig) {
             copy_field[i][j] = field_orig[i][j];
         }
     }
+}
+
+int equal(int** field1, int** field2) {
+    int res = 1;
+    for (int i = 0; i < HEIGHT && res; i++) {
+        for (int j = 0; j < WIDTH && res; j++) {
+            if (field1[i][j] != field2[i][j]) res = 0;
+        }
+    }
+    return res;
+}
+
+int ex_alive(int** field) {
+    int res = 0;
+    for (int i = 0; i < HEIGHT && !res; i++) {
+        for (int j = 0; j < WIDTH && !res; j++) {
+            if (field[i][j]) res = 1;
+        }
+    }
+    return res;
 }
